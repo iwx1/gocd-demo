@@ -1,0 +1,12 @@
+
+
+    docker-compose up -d
+#    docker-compose scale gocd-agent=2
+    docker-compose logs -f
+
+    docker stop $(docker ps -q)
+    docker rm $(docker ps -a -q)
+    echo y | docker volume prune
+
+    docker volume ls
+    docker ps -a

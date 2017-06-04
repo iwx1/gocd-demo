@@ -1,0 +1,32 @@
+version: '3'
+services:
+  gocd-server:
+    image: gocd/gocd-server:v17.5.0
+    environment:
+     - AGENT_AUTO_REGISTER_KEY=51684b3d-a40f-4ef0-8003-d239a3125aed
+    ports:
+     - 8153:8153
+     - 8154:8154
+    volumes:
+     - ./gocd-server-data:/godata
+     - ./gocd-server-home:/home/go
+  gocd-agent-default:
+    image: gocd/gocd-agent-ubuntu-16.04:v17.5.0
+    environment:
+     - GO_SERVER_URL=https://gocd-server:8154/go
+     - AGENT_AUTO_REGISTER_KEY=51684b3d-a40f-4ef0-8003-d239a3125aed
+     - AGENT_AUTO_REGISTER_RESOURCES=default
+    depends_on:
+     - gocd-server
+    restart: always
+  gocd-agent-java:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent-java
+    environment:
+     - GO_SERVER_URL=https://gocd-server:8154/go
+     - AGENT_AUTO_REGISTER_KEY=51684b3d-a40f-4ef0-8003-d239a3125aed
+     - AGENT_AUTO_REGISTER_RESOURCES=java,test
+    depends_on:
+      - gocd-server
+    restart: always

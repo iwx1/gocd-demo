@@ -1,0 +1,9 @@
+FROM gocd/gocd-agent-ubuntu-16.04:v17.5.0
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update && \
+    apt-get install -y --force-yes curl ca-certificates-java && \
+    update-ca-certificates -f && \
+    apt-get -y autoremove && \
+    rm -rf /var/lib/apt/lists/*
