@@ -15,18 +15,40 @@ services:
     environment:
      - GO_SERVER_URL=https://gocd-server:8154/go
      - AGENT_AUTO_REGISTER_KEY=51684b3d-a40f-4ef0-8003-d239a3125aed
-     - AGENT_AUTO_REGISTER_RESOURCES=default
+     - AGENT_AUTO_REGISTER_RESOURCES=default,linux,java,jre
     depends_on:
      - gocd-server
     restart: always
-  gocd-agent-java:
+  gocd-agent-jdk:
     build:
       context: .
-      dockerfile: Dockerfile.agent-java
+      dockerfile: Dockerfile.agent-jdk
     environment:
      - GO_SERVER_URL=https://gocd-server:8154/go
      - AGENT_AUTO_REGISTER_KEY=51684b3d-a40f-4ef0-8003-d239a3125aed
-     - AGENT_AUTO_REGISTER_RESOURCES=java,test
+     - AGENT_AUTO_REGISTER_RESOURCES=linux,java,jre,jdk
+    depends_on:
+      - gocd-server
+    restart: always
+  gocd-agent-npm:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent-npm
+    environment:
+     - GO_SERVER_URL=https://gocd-server:8154/go
+     - AGENT_AUTO_REGISTER_KEY=51684b3d-a40f-4ef0-8003-d239a3125aed
+     - AGENT_AUTO_REGISTER_RESOURCES=linux,node,npm,nvm
+    depends_on:
+      - gocd-server
+    restart: always
+  gocd-agent-golang:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent-golang
+    environment:
+     - GO_SERVER_URL=https://gocd-server:8154/go
+     - AGENT_AUTO_REGISTER_KEY=51684b3d-a40f-4ef0-8003-d239a3125aed
+     - AGENT_AUTO_REGISTER_RESOURCES=linux,golang,go
     depends_on:
       - gocd-server
     restart: always
