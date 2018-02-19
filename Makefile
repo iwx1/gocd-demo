@@ -1,9 +1,10 @@
 clean:
-	docker stop $(docker ps -q)	; \
-	docker rm $(docker ps -a -q)	; \
+	docker-compose stop; \
+	docker-compose rm -f; \
 	echo y | docker volume prune
 
 start:
+	docker-compose build; \
 	docker-compose up -d
 
 logs:

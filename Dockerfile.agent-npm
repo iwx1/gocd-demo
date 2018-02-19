@@ -1,4 +1,4 @@
-FROM gocd/gocd-agent-ubuntu-16.04:v17.5.0
+FROM gocd/gocd-agent-ubuntu-16.04:v17.12.0
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -14,6 +14,8 @@ RUN apt-get update && apt-get install -y -q --no-install-recommends \
     rsync \
     software-properties-common \
     wget \
+    zip \
+    unzip \
     && rm -rf /var/lib/apt/lists/*
 
 ENV NVM_DIR /usr/local/nvm
