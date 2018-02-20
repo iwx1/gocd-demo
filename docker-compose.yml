@@ -3,7 +3,7 @@ services:
   gocd-server:
     image: gocd/gocd-server:v18.1.0
     environment:
-     - AGENT_AUTO_REGISTER_KEY=51684b3d-a40f-4ef0-8003-d239a3125aed
+     - AGENT_AUTO_REGISTER_KEY=c53fcbb4-0f35-49bc-8186-b3272d15d6ff
     ports:
      - 8153:8153
      - 8154:8154
@@ -14,7 +14,7 @@ services:
     image: gocd/gocd-agent-ubuntu-16.04:v18.1.0
     environment:
      - GO_SERVER_URL=https://gocd-server:8154/go
-     - AGENT_AUTO_REGISTER_KEY=51684b3d-a40f-4ef0-8003-d239a3125aed
+     - AGENT_AUTO_REGISTER_KEY=c53fcbb4-0f35-49bc-8186-b3272d15d6ff
      - AGENT_AUTO_REGISTER_RESOURCES=default,linux,java,jre
     depends_on:
      - gocd-server
@@ -25,7 +25,7 @@ services:
       dockerfile: Dockerfile.agent-jdk
     environment:
      - GO_SERVER_URL=https://gocd-server:8154/go
-     - AGENT_AUTO_REGISTER_KEY=51684b3d-a40f-4ef0-8003-d239a3125aed
+     - AGENT_AUTO_REGISTER_KEY=c53fcbb4-0f35-49bc-8186-b3272d15d6ff
      - AGENT_AUTO_REGISTER_RESOURCES=linux,java,jre,jdk
     depends_on:
       - gocd-server
@@ -36,7 +36,7 @@ services:
       dockerfile: Dockerfile.agent-npm
     environment:
      - GO_SERVER_URL=https://gocd-server:8154/go
-     - AGENT_AUTO_REGISTER_KEY=51684b3d-a40f-4ef0-8003-d239a3125aed
+     - AGENT_AUTO_REGISTER_KEY=c53fcbb4-0f35-49bc-8186-b3272d15d6ff
      - AGENT_AUTO_REGISTER_RESOURCES=linux,node,npm,nvm
     depends_on:
       - gocd-server
@@ -47,7 +47,7 @@ services:
       dockerfile: Dockerfile.agent-golang
     environment:
      - GO_SERVER_URL=https://gocd-server:8154/go
-     - AGENT_AUTO_REGISTER_KEY=51684b3d-a40f-4ef0-8003-d239a3125aed
+     - AGENT_AUTO_REGISTER_KEY=c53fcbb4-0f35-49bc-8186-b3272d15d6ff
      - AGENT_AUTO_REGISTER_RESOURCES=linux,golang,go
     depends_on:
       - gocd-server
