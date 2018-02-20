@@ -6,7 +6,7 @@ stop:
 	docker-compose stop
 
 clean:
-		stop
+		make stop
 		git clean -xdf
 		docker-compose rm -f
 		echo y | docker volume prune
