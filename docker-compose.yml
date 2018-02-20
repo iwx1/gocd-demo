@@ -1,7 +1,7 @@
 version: '3'
 services:
   gocd-server:
-    image: gocd/gocd-server:v17.12.0
+    image: gocd/gocd-server:v18.1.0
     environment:
      - AGENT_AUTO_REGISTER_KEY=51684b3d-a40f-4ef0-8003-d239a3125aed
     ports:
@@ -11,7 +11,7 @@ services:
      - ./gocd-server-data:/godata
      - ./gocd-server-home:/home/go
   gocd-agent-default:
-    image: gocd/gocd-agent-ubuntu-16.04:v17.12.0
+    image: gocd/gocd-agent-ubuntu-16.04:v18.1.0
     environment:
      - GO_SERVER_URL=https://gocd-server:8154/go
      - AGENT_AUTO_REGISTER_KEY=51684b3d-a40f-4ef0-8003-d239a3125aed
