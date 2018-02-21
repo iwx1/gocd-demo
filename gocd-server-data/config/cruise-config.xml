@@ -12,4 +12,166 @@
       </authConfigs>
     </security>
   </server>
+  <pipelines group="Samples">
+    <pipeline name="Check_Platform" labeltemplate="${git[:7]}" lockBehavior="none">
+      <materials>
+        <git url="https://github.com/vspiewak/hubot-twitter-mention" shallowClone="true" materialName="git" />
+      </materials>
+      <stage name="ready-stage">
+        <jobs>
+          <job name="ready-job">
+            <tasks>
+              <exec command="echo">
+                <arg>"ready"</arg>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="check-install-stage">
+        <jobs>
+          <job name="npm-check">
+            <tasks>
+              <exec command="npm">
+                <arg>version</arg>
+              </exec>
+            </tasks>
+            <resources>
+              <resource>npm</resource>
+            </resources>
+          </job>
+          <job name="jdk-check">
+            <tasks>
+              <exec command="javac">
+                <arg>-version</arg>
+              </exec>
+            </tasks>
+            <resources>
+              <resource>jdk</resource>
+            </resources>
+          </job>
+          <job name="golang-check">
+            <tasks>
+              <exec command="go">
+                <arg>version</arg>
+              </exec>
+            </tasks>
+            <resources>
+              <resource>golang</resource>
+            </resources>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="Update_Platform">
+      <materials>
+        <pipeline pipelineName="Check_Platform" stageName="check-install-stage" />
+      </materials>
+      <stage name="update-stage" fetchMaterials="false" cleanWorkingDir="true">
+        <jobs>
+          <job name="update-agent" runOnAllAgents="true">
+            <tasks>
+              <exec command="bash">
+                <arg>-c</arg>
+                <arg>sudo apt-get update &amp;&amp; sudo apt-get upgrade</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="React_Boilerplate" labeltemplate="${git[:7]}" lockBehavior="none">
+      <materials>
+        <git url="https://github.com/react-boilerplate/react-boilerplate.git" shallowClone="true" materialName="git" />
+      </materials>
+      <stage name="ready-stage">
+        <jobs>
+          <job name="ready-job">
+            <tasks>
+              <exec command="find">
+                <arg>.</arg>
+              </exec>
+              <exec command="npm">
+                <arg>version</arg>
+              </exec>
+              <exec command="node">
+                <arg>./internals/scripts/generate-templates-for-linting</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>npm</resource>
+            </resources>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="Go_API" labeltemplate="${git[:7]}" lockBehavior="none">
+      <materials>
+        <git url="https://github.com/vspiewak/go-hp-api" shallowClone="true" materialName="git" />
+      </materials>
+      <stage name="build">
+        <jobs>
+          <job name="go-build">
+            <tasks>
+              <exec command="bash">
+                <arg>-c</arg>
+                <arg>GOPATH=$(pwd); cd src/gohpapi; make build</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="find">
+                <arg>.</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>golang</resource>
+            </resources>
+            <artifacts>
+              <artifact src="src/gohpapi/target" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </pipelines>
+  <pipelines group="TodoMVC">
+    <pipeline name="React" labeltemplate="${git[:7]}" lockBehavior="none">
+      <materials>
+        <git url="https://github.com/tastejs/todomvc.git" shallowClone="true" materialName="git" />
+      </materials>
+      <stage name="defaultStage" cleanWorkingDir="true">
+        <jobs>
+          <job name="defaultJob">
+            <tasks>
+              <exec command="npm" workingdir="examples/react">
+                <arg>install</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="find" workingdir="examples/react">
+                <arg>.</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="examples/react">
+                <arg>-c</arg>
+                <arg>zip --symlinks -r -q dist.$GO_PIPELINE_LABEL.zip . -x '.git*' -x '*.zip'</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="find" workingdir="examples/react">
+                <arg>.</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>npm</resource>
+            </resources>
+            <artifacts>
+              <artifact src="examples/react/dist.*.zip" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </pipelines>
 </cruise>
