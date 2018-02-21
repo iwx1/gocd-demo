@@ -8,6 +8,7 @@ stop:
 clean:
 		make stop
 		git clean -xdf
+		rm -rf gocd-server-data/db
 		docker-compose rm -f
 		echo y | docker volume prune
 
