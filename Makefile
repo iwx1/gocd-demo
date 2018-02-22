@@ -5,6 +5,10 @@ start:
 stop:
 	docker-compose stop
 
+reset:
+	make clean
+	git reset --hard HEAD
+
 clean:
 		make stop
 		git clean -xdf
