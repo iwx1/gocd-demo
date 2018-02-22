@@ -9,6 +9,36 @@
             <value>/godata/password.properties</value>
           </property>
         </authConfig>
+        <authConfig id="github-oauth" pluginId="cd.go.authorization.github">
+          <property>
+            <key>ClientId</key>
+            <encryptedValue>fwL5mCLSwUVCT0CC4KuXtUAKni0j+a+0</encryptedValue>
+          </property>
+          <property>
+            <key>ClientSecret</key>
+            <encryptedValue>B9XQrPJQ1O/0wmExsi1NVpj6ndPc9JK0XGumOwRlCKq+hrRMPGUFKFW7A9AMxdW6</encryptedValue>
+          </property>
+          <property>
+            <key>AuthenticateWith</key>
+            <value>GitHub</value>
+          </property>
+          <property>
+            <key>GitHubEnterpriseUrl</key>
+            <value />
+          </property>
+          <property>
+            <key>AllowedOrganizations</key>
+            <value />
+          </property>
+          <property>
+            <key>AuthorizeUsing</key>
+            <value>PersonalAccessToken</value>
+          </property>
+          <property>
+            <key>PersonalAccessToken</key>
+            <encryptedValue>jx9foYzkwtMgWr/TYZS90ONgd1vcq0wo99MYZmYnoiagZjYGpOFWE23vVgIUZG3b</encryptedValue>
+          </property>
+        </authConfig>
       </authConfigs>
       <roles>
         <role name="admins">
@@ -21,6 +51,20 @@
             <user>guest</user>
           </users>
         </role>
+        <pluginRole name="github-dailybrain-members" authConfigId="github-oauth">
+          <property>
+            <key>Organizations</key>
+            <value>dailybrain</value>
+          </property>
+          <property>
+            <key>Teams</key>
+            <value />
+          </property>
+          <property>
+            <key>Users</key>
+            <value />
+          </property>
+        </pluginRole>
       </roles>
       <admins>
         <user>admin</user>
@@ -31,7 +75,11 @@
     <authorization>
       <view>
         <role>view-only</role>
+        <role>github-dailybrain-members</role>
       </view>
+      <operate>
+        <role>github-dailybrain-members</role>
+      </operate>
       <admins>
         <role>admins</role>
       </admins>
