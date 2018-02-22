@@ -10,9 +10,32 @@
           </property>
         </authConfig>
       </authConfigs>
+      <roles>
+        <role name="admins">
+          <users>
+            <user>admin</user>
+          </users>
+        </role>
+        <role name="view-only">
+          <users>
+            <user>guest</user>
+          </users>
+        </role>
+      </roles>
+      <admins>
+        <user>admin</user>
+      </admins>
     </security>
   </server>
   <pipelines group="Platform">
+    <authorization>
+      <view>
+        <role>view-only</role>
+      </view>
+      <admins>
+        <role>admins</role>
+      </admins>
+    </authorization>
     <pipeline name="Check_Platform" labeltemplate="${git[:7]}" lockBehavior="none">
       <materials>
         <git url="https://github.com/vspiewak/hubot-twitter-mention" shallowClone="true" materialName="git" />
@@ -65,6 +88,18 @@
     </pipeline>
   </pipelines>
   <pipelines group="MicroServices">
+    <authorization>
+      <view>
+        <role>admins</role>
+        <role>view-only</role>
+      </view>
+      <operate>
+        <role>admins</role>
+      </operate>
+      <admins>
+        <role>admins</role>
+      </admins>
+    </authorization>
     <pipeline name="ServiceA" labeltemplate="${ServiceA[:7]}">
       <materials>
         <git url="https://github.com/vspiewak/devoxxfr-2016-gocd-nono" materialName="ServiceA" />
@@ -117,6 +152,18 @@
     </pipeline>
   </pipelines>
   <pipelines group="TodoMVC">
+    <authorization>
+      <view>
+        <role>admins</role>
+        <role>view-only</role>
+      </view>
+      <operate>
+        <role>admins</role>
+      </operate>
+      <admins>
+        <role>admins</role>
+      </admins>
+    </authorization>
     <pipeline name="React" labeltemplate="${git[:7]}" lockBehavior="none">
       <materials>
         <git url="https://github.com/tastejs/todomvc.git" shallowClone="true" materialName="git" />
@@ -155,6 +202,18 @@
     </pipeline>
   </pipelines>
   <pipelines group="Others">
+    <authorization>
+      <view>
+        <role>admins</role>
+        <role>view-only</role>
+      </view>
+      <operate>
+        <role>admins</role>
+      </operate>
+      <admins>
+        <role>admins</role>
+      </admins>
+    </authorization>
     <pipeline name="React_Boilerplate" labeltemplate="${git[:7]}" lockBehavior="none">
       <materials>
         <git url="https://github.com/react-boilerplate/react-boilerplate.git" shallowClone="true" materialName="git" />
