@@ -39,6 +39,21 @@
             <encryptedValue>jx9foYzkwtMgWr/TYZS90ONgd1vcq0wo99MYZmYnoiagZjYGpOFWE23vVgIUZG3b</encryptedValue>
           </property>
         </authConfig>
+        <authConfig id="google-oauth" pluginId="cd.go.authorization.google">
+          <property>
+            <key>ClientId</key>
+            <encryptedValue>qRMvOjwubZagzKZmx6YYGw5bG+Er3xPViDelxFTupcDFNVj9KKIC3IMsA24YdR+xGsRekN/5BNvwDkM37MYBSK8Eh2QuFYeDXvQr/BqX5vU=</encryptedValue>
+          </property>
+          <property>
+            <key>ClientSecret</key>
+            <encryptedValue>kwlbyQll4o5MfLGbdSm/6L6HEFRGjF6md5061YEpOCU=</encryptedValue>
+          </property>
+          <property>
+            <key>AllowedDomains</key>
+            <value>gmail.com
+dailybrain.fr</value>
+          </property>
+        </authConfig>
       </authConfigs>
       <roles>
         <role name="admins">
@@ -317,4 +332,8 @@
       </stage>
     </pipeline>
   </pipelines>
+  <environments>
+    <environment name="Demo" />
+    <environment name="Prod" />
+  </environments>
 </cruise>
