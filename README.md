@@ -10,6 +10,9 @@
     make clean
 
 
+    open https://localhost:8154
+
+
 ## Default Users
 
     * admin / admin
