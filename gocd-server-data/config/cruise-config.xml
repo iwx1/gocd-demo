@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<cruise xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cruise-config.xsd" schemaVersion="104">
+<cruise xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cruise-config.xsd" schemaVersion="105">
   <server artifactsdir="artifacts" agentAutoRegisterKey="c53fcbb4-0f35-49bc-8186-b3272d15d6ff" webhookSecret="f18a575c-1a45-4004-8c17-8baf03142cec" commandRepositoryLocation="default" serverId="8aca620d-7e8e-4acf-9e9f-f81a1780f880" tokenGenerationKey="b792ec27-487b-4047-a0b4-bbd8c65959db">
     <security>
       <authConfigs>
@@ -333,6 +333,17 @@ dailybrain.fr</value>
     </pipeline>
   </pipelines>
   <environments>
+    <environment name="Build">
+      <pipelines>
+        <pipeline name="Check_Platform" />
+        <pipeline name="ServiceA" />
+        <pipeline name="ServiceB" />
+        <pipeline name="ServiceC" />
+        <pipeline name="React" />
+        <pipeline name="React_Boilerplate" />
+        <pipeline name="Go_API" />
+      </pipelines>
+    </environment>
     <environment name="Demo" />
     <environment name="Prod" />
   </environments>
