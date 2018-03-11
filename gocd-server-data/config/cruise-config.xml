@@ -332,16 +332,44 @@ dailybrain.fr</value>
       </stage>
     </pipeline>
   </pipelines>
+  <pipelines group="React_Boilerplate">
+    <pipeline name="Build" labeltemplate="${react-boilerplate-sample[:7]}">
+      <materials>
+        <git url="https://github.com/dailybrain/react-boilerplate-sample" shallowClone="true" materialName="react-boilerplate-sample" />
+      </materials>
+      <stage name="setup" cleanWorkingDir="true">
+        <jobs>
+          <job name="setupJob">
+            <tasks>
+              <exec command="find">
+                <arg>.</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="npm">
+                <arg>run</arg>
+                <arg>setup</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>npm</resource>
+            </resources>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+  </pipelines>
   <environments>
     <environment name="Build">
       <pipelines>
+        <pipeline name="Build" />
         <pipeline name="Check_Platform" />
+        <pipeline name="Go_API" />
+        <pipeline name="React" />
+        <pipeline name="React_Boilerplate" />
         <pipeline name="ServiceA" />
         <pipeline name="ServiceB" />
         <pipeline name="ServiceC" />
-        <pipeline name="React" />
-        <pipeline name="React_Boilerplate" />
-        <pipeline name="Go_API" />
       </pipelines>
     </environment>
     <environment name="Demo" />
