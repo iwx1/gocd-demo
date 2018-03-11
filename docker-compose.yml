@@ -1,7 +1,7 @@
 version: '3'
 services:
   gocd-server:
-    image: gocd/gocd-server:v18.1.0
+    image: gocd/gocd-server:v18.2.0
     environment:
      - AGENT_AUTO_REGISTER_KEY=c53fcbb4-0f35-49bc-8186-b3272d15d6ff
     ports:
@@ -11,12 +11,12 @@ services:
      - ./gocd-server-data:/godata
      - ./gocd-server-home:/home/go
   gocd-agent-default:
-    image: gocd/gocd-agent-ubuntu-16.04:v18.1.0
+    image: gocd/gocd-agent-ubuntu-16.04:v18.2.0
     environment:
      - GO_SERVER_URL=https://gocd-server:8154/go
      - AGENT_AUTO_REGISTER_KEY=c53fcbb4-0f35-49bc-8186-b3272d15d6ff
      - AGENT_AUTO_REGISTER_RESOURCES=default,linux,java,jre
-     - AGENT_AUTO_REGISTER_ENVIRONMENTS=Demo,Prod
+     - AGENT_AUTO_REGISTER_ENVIRONMENTS=Build,Demo,Prod
      - AGENT_AUTO_REGISTER_HOSTNAME=Ubuntu Agent
     depends_on:
      - gocd-server
@@ -29,7 +29,7 @@ services:
      - GO_SERVER_URL=https://gocd-server:8154/go
      - AGENT_AUTO_REGISTER_KEY=c53fcbb4-0f35-49bc-8186-b3272d15d6ff
      - AGENT_AUTO_REGISTER_RESOURCES=linux,java,jre,jdk
-     - AGENT_AUTO_REGISTER_ENVIRONMENTS=Demo
+     - AGENT_AUTO_REGISTER_ENVIRONMENTS=Build,Demo
      - AGENT_AUTO_REGISTER_HOSTNAME=Ubuntu JDK Agent
     depends_on:
       - gocd-server
@@ -42,7 +42,7 @@ services:
      - GO_SERVER_URL=https://gocd-server:8154/go
      - AGENT_AUTO_REGISTER_KEY=c53fcbb4-0f35-49bc-8186-b3272d15d6ff
      - AGENT_AUTO_REGISTER_RESOURCES=linux,node,npm,nvm
-     - AGENT_AUTO_REGISTER_ENVIRONMENTS=Demo
+     - AGENT_AUTO_REGISTER_ENVIRONMENTS=Build,Demo
      - AGENT_AUTO_REGISTER_HOSTNAME=Ubuntu NodeJS Agent
     depends_on:
       - gocd-server
@@ -55,7 +55,7 @@ services:
      - GO_SERVER_URL=https://gocd-server:8154/go
      - AGENT_AUTO_REGISTER_KEY=c53fcbb4-0f35-49bc-8186-b3272d15d6ff
      - AGENT_AUTO_REGISTER_RESOURCES=linux,golang,go
-     - AGENT_AUTO_REGISTER_ENVIRONMENTS=Demo
+     - AGENT_AUTO_REGISTER_ENVIRONMENTS=Build,Demo
      - AGENT_AUTO_REGISTER_HOSTNAME=Ubuntu Golang Agent
     depends_on:
       - gocd-server
