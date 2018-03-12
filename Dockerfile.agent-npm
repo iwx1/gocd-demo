@@ -19,20 +19,16 @@ RUN apt-get update && apt-get install -y -q --no-install-recommends \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
-USER go
-
+ENV PROFILE=/etc/profile
+ENV NVM_DIR=/usr/local/nvm
 ENV NVM_VERSION v0.33.8
 ENV NODE_VERSION 8.10.0
 
 RUN curl https://raw.githubusercontent.com/creationix/nvm/$NVM_VERSION/install.sh | bash \
-    && echo '. ~/.nvm/nvm.sh' >> ~/.bashrc \
-    && echo '. ~/.nvm/nvm.sh' >> ~/.profile \
-    && . ~/.profile \
+    && . $NVM_DIR/nvm.sh \
     && nvm install $NODE_VERSION \
     && nvm alias default $NODE_VERSION \
     && nvm use default
 
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH      $NVM_DIR/v$NODE_VERSION/bin:$PATH
-
-USER root
