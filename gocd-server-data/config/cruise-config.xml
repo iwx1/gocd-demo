@@ -339,21 +339,67 @@ dailybrain.fr</value>
       </materials>
       <stage name="setup" cleanWorkingDir="true">
         <jobs>
-          <job name="setupJob">
+          <job name="npm-install">
             <tasks>
-              <exec command="find">
-                <arg>.</arg>
+              <exec command="bash">
+                <arg>-lc</arg>
+                <arg>npm install</arg>
                 <runif status="passed" />
               </exec>
-              <exec command="npm">
-                <arg>run</arg>
-                <arg>setup</arg>
+              <exec command="bash">
+                <arg>-c</arg>
+                <arg>zip --symlinks -r -q dist.$GO_PIPELINE_LABEL.zip .</arg>
                 <runif status="passed" />
               </exec>
             </tasks>
             <resources>
               <resource>npm</resource>
             </resources>
+            <artifacts>
+              <artifact src="dist.*.zip" dest="dist" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="lint" cleanWorkingDir="true">
+        <jobs>
+          <job name="npm-lint">
+            <tasks>
+              <fetchartifact srcdir="dist" pipeline="Build" stage="setup" job="npm-install">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="unzip" workingdir="dist">
+                <arg>-qq</arg>
+                <arg>*.zip</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="dist">
+                <arg>-lc</arg>
+                <arg>npm run lint</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="unit-test" cleanWorkingDir="true">
+        <jobs>
+          <job name="npm-test">
+            <tasks>
+              <fetchartifact srcdir="dist" pipeline="Build" stage="setup" job="npm-install">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="unzip" workingdir="dist">
+                <arg>-qq</arg>
+                <arg>*.zip</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="dist">
+                <arg>-lc</arg>
+                <arg>npm run test</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
           </job>
         </jobs>
       </stage>
