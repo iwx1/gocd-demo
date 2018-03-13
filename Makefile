@@ -5,6 +5,10 @@ start:
 stop:
 	docker-compose stop
 
+restart:
+	make stop
+	make start
+
 reset:
 	make clean
 	git reset --hard HEAD
