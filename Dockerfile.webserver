@@ -6,4 +6,13 @@ ENV LANG C.UTF-8
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     curl \
-    && rm -rf /var/lib/apt/lists/*
+    openssh-server \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /var/run/sshd
+
+COPY gocd_agent_rsa.pub /tmp/gocd_agent_rsa.pub
+RUN mkdir ~/.ssh \
+    && cat /tmp/gocd_agent_rsa.pub >> ~/.ssh/authorized_keys
+
+EXPOSE 22
+CMD ["/usr/sbin/sshd", "-D"]

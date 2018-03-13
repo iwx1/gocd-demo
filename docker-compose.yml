@@ -65,5 +65,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.webserver
-    command: sleep infinity
     restart: always
+    ports:
+     - 22:22
