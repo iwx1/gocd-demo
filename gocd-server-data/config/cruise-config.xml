@@ -361,7 +361,7 @@ dailybrain.fr</value>
           </job>
         </jobs>
       </stage>
-      <stage name="lint" cleanWorkingDir="true">
+      <stage name="lint" fetchMaterials="false" cleanWorkingDir="true">
         <jobs>
           <job name="npm-lint">
             <tasks>
@@ -382,7 +382,7 @@ dailybrain.fr</value>
           </job>
         </jobs>
       </stage>
-      <stage name="unit-test" cleanWorkingDir="true">
+      <stage name="unit-test" fetchMaterials="false" cleanWorkingDir="true">
         <jobs>
           <job name="npm-test">
             <tasks>
@@ -403,6 +403,86 @@ dailybrain.fr</value>
           </job>
         </jobs>
       </stage>
+      <stage name="build" fetchMaterials="false" cleanWorkingDir="true">
+        <jobs>
+          <job name="npm-build">
+            <tasks>
+              <fetchartifact srcdir="dist" pipeline="Build" stage="setup" job="npm-install">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="unzip" workingdir="dist">
+                <arg>-qq</arg>
+                <arg>*.zip</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="dist">
+                <arg>-lc</arg>
+                <arg>npm run build</arg>
+              </exec>
+              <exec command="bash" workingdir="dist/build">
+                <arg>-c</arg>
+                <arg>zip --symlinks -r -q build.$GO_PIPELINE_LABEL.zip .</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <artifacts>
+              <artifact src="dist/build/build.*.zip" dest="build" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="DeployToDev">
+      <materials>
+        <pipeline pipelineName="Build" stageName="build" />
+      </materials>
+      <stage name="deploy" fetchMaterials="false" cleanWorkingDir="true">
+        <jobs>
+          <job name="deploy">
+            <tasks>
+              <fetchartifact srcdir="build" pipeline="Build" stage="build" job="npm-build">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="find">
+                <arg>.</arg>
+              </exec>
+              <exec command="bash">
+                <arg>-lc</arg>
+                <arg>ssh -o StrictHostKeyChecking=no -i $DEPLOY_KEY $DEPLOY_USER@$DEPLOY_HOST "rm -rf /var/www/html"</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash">
+                <arg>-lc</arg>
+                <arg>ssh -o StrictHostKeyChecking=no -i $DEPLOY_KEY $DEPLOY_USER@$DEPLOY_HOST "mkdir -p /var/www/html"</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash">
+                <arg>-c</arg>
+                <arg>scp -o StrictHostKeyChecking=no -i $DEPLOY_KEY build/*.zip $DEPLOY_USER@$DEPLOY_HOST:/var/www/html</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash">
+                <arg>-c</arg>
+                <arg>ssh -o StrictHostKeyChecking=no -i $DEPLOY_KEY $DEPLOY_USER@$DEPLOY_HOST "cd /var/www/html; unzip -qq *.zip"</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash">
+                <arg>-c</arg>
+                <arg>ssh -o StrictHostKeyChecking=no -i $DEPLOY_KEY $DEPLOY_USER@$DEPLOY_HOST "rm /var/www/html/*.zip"</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash">
+                <arg>-c</arg>
+                <arg>ssh -o StrictHostKeyChecking=no -i $DEPLOY_KEY $DEPLOY_USER@$DEPLOY_HOST "/etc/init.d/apache2 restart"</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <resources>
+              <resource>npm</resource>
+            </resources>
+          </job>
+        </jobs>
+      </stage>
     </pipeline>
   </pipelines>
   <environments>
@@ -418,7 +498,22 @@ dailybrain.fr</value>
         <pipeline name="ServiceC" />
       </pipelines>
     </environment>
-    <environment name="Demo" />
+    <environment name="Demo">
+      <environmentvariables>
+        <variable name="DEPLOY_KEY">
+          <value>/home/go/.ssh/gocd_agent_rsa</value>
+        </variable>
+        <variable name="DEPLOY_USER">
+          <value>root</value>
+        </variable>
+        <variable name="DEPLOY_HOST">
+          <value>webserver</value>
+        </variable>
+      </environmentvariables>
+      <pipelines>
+        <pipeline name="DeployToDev" />
+      </pipelines>
+    </environment>
     <environment name="Prod" />
   </environments>
 </cruise>
