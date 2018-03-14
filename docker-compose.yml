@@ -68,3 +68,4 @@ services:
     restart: always
     ports:
      - 22:22
+     - 8000:80
