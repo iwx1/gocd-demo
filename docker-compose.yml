@@ -60,12 +60,19 @@ services:
     depends_on:
       - gocd-server
     restart: always
-  webserver:
-    container_name: webserver1
+  webserver-demo:
     build:
       context: .
       dockerfile: Dockerfile.webserver
     restart: always
     ports:
-     - 22:22
+     - "2222:22"
      - 8000:80
+  webserver-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile.webserver
+    restart: always
+    ports:
+     - "2223:22"
+     - 9000:80

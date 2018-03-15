@@ -432,7 +432,7 @@ dailybrain.fr</value>
         </jobs>
       </stage>
     </pipeline>
-    <pipeline name="DeployToDev">
+    <pipeline name="DeployToDemo">
       <materials>
         <pipeline pipelineName="Build" stageName="build" />
       </materials>
@@ -507,11 +507,11 @@ dailybrain.fr</value>
           <value>root</value>
         </variable>
         <variable name="DEPLOY_HOST">
-          <value>webserver</value>
+          <value>webserver-demo</value>
         </variable>
       </environmentvariables>
       <pipelines>
-        <pipeline name="DeployToDev" />
+        <pipeline name="DeployToDemo" />
       </pipelines>
     </environment>
     <environment name="Prod" />
