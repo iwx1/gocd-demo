@@ -215,124 +215,6 @@ dailybrain.fr</value>
       </stage>
     </pipeline>
   </pipelines>
-  <pipelines group="TodoMVC">
-    <authorization>
-      <view>
-        <role>admins</role>
-        <role>view-only</role>
-      </view>
-      <operate>
-        <role>admins</role>
-      </operate>
-      <admins>
-        <role>admins</role>
-      </admins>
-    </authorization>
-    <pipeline name="React" labeltemplate="${git[:7]}" lockBehavior="none">
-      <materials>
-        <git url="https://github.com/tastejs/todomvc.git" shallowClone="true" materialName="git" />
-      </materials>
-      <stage name="defaultStage" cleanWorkingDir="true">
-        <jobs>
-          <job name="defaultJob">
-            <tasks>
-              <exec command="npm" workingdir="examples/react">
-                <arg>install</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="find" workingdir="examples/react">
-                <arg>.</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="bash" workingdir="examples/react">
-                <arg>-c</arg>
-                <arg>zip --symlinks -r -q dist.$GO_PIPELINE_LABEL.zip . -x '.git*' -x '*.zip'</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="find" workingdir="examples/react">
-                <arg>.</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-            <resources>
-              <resource>npm</resource>
-            </resources>
-            <artifacts>
-              <artifact src="examples/react/dist.*.zip" />
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-    </pipeline>
-  </pipelines>
-  <pipelines group="Others">
-    <authorization>
-      <view>
-        <role>admins</role>
-        <role>view-only</role>
-      </view>
-      <operate>
-        <role>admins</role>
-      </operate>
-      <admins>
-        <role>admins</role>
-      </admins>
-    </authorization>
-    <pipeline name="React_Boilerplate" labeltemplate="${git[:7]}" lockBehavior="none">
-      <materials>
-        <git url="https://github.com/react-boilerplate/react-boilerplate.git" shallowClone="true" materialName="git" />
-      </materials>
-      <stage name="ready-stage">
-        <jobs>
-          <job name="ready-job">
-            <tasks>
-              <exec command="find">
-                <arg>.</arg>
-              </exec>
-              <exec command="npm">
-                <arg>version</arg>
-              </exec>
-              <exec command="node">
-                <arg>./internals/scripts/generate-templates-for-linting</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-            <resources>
-              <resource>npm</resource>
-            </resources>
-          </job>
-        </jobs>
-      </stage>
-    </pipeline>
-    <pipeline name="Go_API" labeltemplate="${git[:7]}" lockBehavior="none">
-      <materials>
-        <git url="https://github.com/vspiewak/go-hp-api" shallowClone="true" materialName="git" />
-      </materials>
-      <stage name="build">
-        <jobs>
-          <job name="go-build">
-            <tasks>
-              <exec command="bash">
-                <arg>-c</arg>
-                <arg>GOPATH=$(pwd); cd src/gohpapi; make build</arg>
-                <runif status="passed" />
-              </exec>
-              <exec command="find">
-                <arg>.</arg>
-                <runif status="passed" />
-              </exec>
-            </tasks>
-            <resources>
-              <resource>golang</resource>
-            </resources>
-            <artifacts>
-              <artifact src="src/gohpapi/target" />
-            </artifacts>
-          </job>
-        </jobs>
-      </stage>
-    </pipeline>
-  </pipelines>
   <pipelines group="React_Boilerplate">
     <pipeline name="Build" labeltemplate="${react-boilerplate-sample[:7]}">
       <materials>
@@ -380,6 +262,9 @@ dailybrain.fr</value>
                 <runif status="passed" />
               </exec>
             </tasks>
+            <resources>
+              <resource>npm</resource>
+            </resources>
           </job>
         </jobs>
       </stage>
@@ -401,6 +286,9 @@ dailybrain.fr</value>
                 <runif status="passed" />
               </exec>
             </tasks>
+            <resources>
+              <resource>npm</resource>
+            </resources>
           </job>
         </jobs>
       </stage>
@@ -426,6 +314,9 @@ dailybrain.fr</value>
                 <runif status="passed" />
               </exec>
             </tasks>
+            <resources>
+              <resource>npm</resource>
+            </resources>
             <artifacts>
               <artifact src="dist/build/build.*.zip" dest="build" />
             </artifacts>
@@ -477,6 +368,41 @@ dailybrain.fr</value>
       <materials>
         <pipeline pipelineName="ReviewDemo" stageName="validate" materialName="react-boilerplate-sample" />
       </materials>
+    </pipeline>
+    <pipeline name="Analysis" labeltemplate="${react-boilerplate-sample[:7]}">
+      <materials>
+        <pipeline pipelineName="DeployToDemo" stageName="deploy" materialName="react-boilerplate-sample" />
+      </materials>
+      <stage name="coverage" fetchMaterials="false" cleanWorkingDir="true">
+        <jobs>
+          <job name="npm-coverage">
+            <tasks>
+              <fetchartifact srcdir="dist" pipeline="Build/DeployToDemo" stage="setup" job="npm-install">
+                <runif status="passed" />
+              </fetchartifact>
+              <exec command="unzip" workingdir="dist">
+                <arg>-qq</arg>
+                <arg>*.zip</arg>
+                <runif status="passed" />
+              </exec>
+              <exec command="bash" workingdir="dist">
+                <arg>-lc</arg>
+                <arg>npm run test</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+            <tabs>
+              <tab name="Coverage" path="coverage/lcov-report/index.html" />
+            </tabs>
+            <resources>
+              <resource>npm</resource>
+            </resources>
+            <artifacts>
+              <test src="dist/coverage/*" dest="coverage" />
+            </artifacts>
+          </job>
+        </jobs>
+      </stage>
     </pipeline>
   </pipelines>
   <templates>
@@ -540,9 +466,6 @@ dailybrain.fr</value>
       <pipelines>
         <pipeline name="Build" />
         <pipeline name="Check_Platform" />
-        <pipeline name="Go_API" />
-        <pipeline name="React" />
-        <pipeline name="React_Boilerplate" />
         <pipeline name="ServiceA" />
         <pipeline name="ServiceB" />
         <pipeline name="ServiceC" />
@@ -561,6 +484,7 @@ dailybrain.fr</value>
         </variable>
       </environmentvariables>
       <pipelines>
+        <pipeline name="Analysis" />
         <pipeline name="DeployToDemo" />
         <pipeline name="ReviewDemo" />
       </pipelines>
