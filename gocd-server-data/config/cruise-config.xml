@@ -118,8 +118,9 @@ dailybrain.fr</value>
         <jobs>
           <job name="npm-check">
             <tasks>
-              <exec command="npm">
-                <arg>version</arg>
+              <exec command="bash">
+                <arg>-lc</arg>
+                <arg>npm version</arg>
               </exec>
             </tasks>
             <resources>
@@ -432,15 +433,64 @@ dailybrain.fr</value>
         </jobs>
       </stage>
     </pipeline>
-    <pipeline name="DeployToDemo">
+    <pipeline name="DeployToDemo" labeltemplate="${react-boilerplate-sample[:7]}" template="DeployTemplate">
+      <params>
+        <param name="pipelineName">Build</param>
+      </params>
       <materials>
-        <pipeline pipelineName="Build" stageName="build" />
+        <pipeline pipelineName="Build" stageName="build" materialName="react-boilerplate-sample" />
       </materials>
+    </pipeline>
+    <pipeline name="ReviewDemo" labeltemplate="${react-boilerplate-sample[:7]}">
+      <materials>
+        <pipeline pipelineName="DeployToDemo" stageName="deploy" materialName="react-boilerplate-sample" />
+      </materials>
+      <stage name="review" fetchMaterials="false">
+        <jobs>
+          <job name="review">
+            <tasks>
+              <exec command="echo">
+                <arg>"review"</arg>
+                <runif status="passed" />
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+      <stage name="validate" fetchMaterials="false">
+        <approval type="manual" />
+        <jobs>
+          <job name="validate">
+            <tasks>
+              <exec command="echo">
+                <arg>"validated"</arg>
+              </exec>
+            </tasks>
+          </job>
+        </jobs>
+      </stage>
+    </pipeline>
+    <pipeline name="DeployToProd" labeltemplate="${react-boilerplate-sample[:7]}" template="DeployTemplate">
+      <params>
+        <param name="pipelineName">Build/DeployToDemo/ReviewDemo</param>
+      </params>
+      <materials>
+        <pipeline pipelineName="ReviewDemo" stageName="validate" materialName="react-boilerplate-sample" />
+      </materials>
+    </pipeline>
+  </pipelines>
+  <templates>
+    <pipeline name="DeployTemplate">
+      <authorization>
+        <admins>
+          <user>admin</user>
+        </admins>
+      </authorization>
       <stage name="deploy" fetchMaterials="false" cleanWorkingDir="true">
         <jobs>
           <job name="deploy">
             <tasks>
-              <fetchartifact srcdir="build" pipeline="Build" stage="build" job="npm-build">
+              <fetchartifact srcdir="build" pipeline="#{pipelineName}" stage="build" job="npm-build">
                 <runif status="passed" />
               </fetchartifact>
               <exec command="find">
@@ -478,13 +528,13 @@ dailybrain.fr</value>
               </exec>
             </tasks>
             <resources>
-              <resource>npm</resource>
+              <resource>deploy</resource>
             </resources>
           </job>
         </jobs>
       </stage>
     </pipeline>
-  </pipelines>
+  </templates>
   <environments>
     <environment name="Build">
       <pipelines>
@@ -512,8 +562,24 @@ dailybrain.fr</value>
       </environmentvariables>
       <pipelines>
         <pipeline name="DeployToDemo" />
+        <pipeline name="ReviewDemo" />
       </pipelines>
     </environment>
-    <environment name="Prod" />
+    <environment name="Prod">
+      <environmentvariables>
+        <variable name="DEPLOY_KEY">
+          <value>/home/go/.ssh/gocd_agent_rsa</value>
+        </variable>
+        <variable name="DEPLOY_USER">
+          <value>root</value>
+        </variable>
+        <variable name="DEPLOY_HOST">
+          <value>webserver-prod</value>
+        </variable>
+      </environmentvariables>
+      <pipelines>
+        <pipeline name="DeployToProd" />
+      </pipelines>
+    </environment>
   </environments>
 </cruise>

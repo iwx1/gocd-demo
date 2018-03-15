@@ -1,0 +1,9 @@
+FROM gocd/gocd-agent-ubuntu-16.04:v18.2.0
+
+USER go
+
+RUN mkdir ~/.ssh
+COPY --chown=go:go gocd_agent_rsa /home/go/.ssh/gocd_agent_rsa
+RUN chmod 400 /home/go/.ssh/gocd_agent_rsa
+
+USER root
