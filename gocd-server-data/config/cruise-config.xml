@@ -101,7 +101,7 @@ dailybrain.fr</value>
     </authorization>
     <pipeline name="Check_Platform" labeltemplate="${git[:7]}" lockBehavior="none">
       <materials>
-        <git url="https://github.com/vspiewak/hubot-twitter-mention" shallowClone="true" materialName="git" />
+        <git url="https://github.com/dailybrain/gocd-demo" shallowClone="true" materialName="git" />
       </materials>
       <stage name="ready-stage">
         <jobs>
@@ -166,7 +166,7 @@ dailybrain.fr</value>
     </authorization>
     <pipeline name="ServiceA" labeltemplate="${ServiceA[:7]}">
       <materials>
-        <git url="https://github.com/vspiewak/devoxxfr-2016-gocd-nono" materialName="ServiceA" />
+        <git url="https://github.com/gocd/gocd" materialName="ServiceA" />
       </materials>
       <stage name="dummyStage">
         <jobs>
@@ -182,7 +182,7 @@ dailybrain.fr</value>
     </pipeline>
     <pipeline name="ServiceB" labeltemplate="${ServiceB[:7]}">
       <materials>
-        <git url="https://github.com/vspiewak/devoxxfr-2016-gocd-sample-app" materialName="ServiceB" />
+        <git url="https://github.com/gocd/www.go.cd" materialName="ServiceB" />
       </materials>
       <stage name="dummyStage" fetchMaterials="false">
         <jobs>
@@ -200,7 +200,7 @@ dailybrain.fr</value>
       <materials>
         <pipeline pipelineName="ServiceA" stageName="dummyStage" materialName="ServiceA" />
         <pipeline pipelineName="ServiceB" stageName="dummyStage" materialName="ServiceB" />
-        <git url="https://github.com/vspiewak/hubot-ansible" materialName="ServiceC" />
+        <git url="https://github.com/gocd/docs.go.cd" materialName="ServiceC" />
       </materials>
       <stage name="dummyStage" fetchMaterials="false">
         <jobs>
