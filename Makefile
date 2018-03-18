@@ -1,6 +1,8 @@
 start:
 	docker-compose build
-	docker-compose up -d
+	docker-compose up \
+		--scale gocd-agent-npm=2 \
+		-d
 
 stop:
 	docker-compose stop
