@@ -168,32 +168,7 @@ dailybrain.fr</value>
       <materials>
         <git url="https://github.com/dailybrain/gocd-demo" materialName="ServiceA" />
       </materials>
-      <stage name="dummyStageOne">
-        <jobs>
-          <job name="dummyJobOne">
-            <tasks>
-              <exec command="echo">
-                <arg>"ok"</arg>
-              </exec>
-            </tasks>
-          </job>
-          <job name="dummyJobTwo">
-            <tasks>
-              <exec command="echo">
-                <arg>"ok"</arg>
-              </exec>
-            </tasks>
-          </job>
-          <job name="dummyJobThree">
-            <tasks>
-              <exec command="echo">
-                <arg>"ok"</arg>
-              </exec>
-            </tasks>
-          </job>
-        </jobs>
-      </stage>
-      <stage name="dummyStageTwo">
+      <stage name="dummyStage">
         <jobs>
           <job name="dummyJob">
             <tasks>
@@ -432,7 +407,7 @@ dailybrain.fr</value>
           </job>
         </jobs>
       </stage>
-    </pipeline>
+    </pipeline>    
     <pipeline name="DeployToProd" labeltemplate="${react-boilerplate-sample[:7]}" template="DeployTemplate">
       <params>
         <param name="pipelineName">Build/DeployToDemo/ReviewDemo</param>
