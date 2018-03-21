@@ -373,14 +373,6 @@ dailybrain.fr</value>
         </jobs>
       </stage>
     </pipeline>
-    <pipeline name="DeployToProd" labeltemplate="${react-boilerplate-sample[:7]}" template="DeployTemplate">
-      <params>
-        <param name="pipelineName">Build/DeployToDemo/ReviewDemo</param>
-      </params>
-      <materials>
-        <pipeline pipelineName="ReviewDemo" stageName="validate" materialName="react-boilerplate-sample" />
-      </materials>
-    </pipeline>
     <pipeline name="Analysis" labeltemplate="${react-boilerplate-sample[:7]}">
       <materials>
         <pipeline pipelineName="DeployToDemo" stageName="deploy" materialName="react-boilerplate-sample" />
@@ -415,6 +407,15 @@ dailybrain.fr</value>
           </job>
         </jobs>
       </stage>
+    </pipeline>    
+    <pipeline name="DeployToProd" labeltemplate="${react-boilerplate-sample[:7]}" template="DeployTemplate">
+      <params>
+        <param name="pipelineName">Build/DeployToDemo/ReviewDemo</param>
+      </params>
+      <materials>
+        <pipeline pipelineName="ReviewDemo" stageName="validate" materialName="react-boilerplate-sample" />
+        <pipeline pipelineName="Analysis" stageName="coverage" materialName="analysis" />
+      </materials>
     </pipeline>
   </pipelines>
   <templates>
