@@ -3,7 +3,8 @@ FROM gocd/gocd-agent-ubuntu-16.04:v18.6.0
 ENV DEBIAN_FRONTEND noninteractive
 ENV LANG C.UTF-8
 
-RUN apt-get update && \
+RUN rm -f /etc/apt/sources.list.d/openjdk-ppa.list
+RUN apt-get update -y&& \
     apt-get install -y --no-install-recommends \
     curl \
     openssh-server \

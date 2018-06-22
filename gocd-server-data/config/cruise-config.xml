@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<cruise xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cruise-config.xsd" schemaVersion="105">
+<cruise xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="cruise-config.xsd" schemaVersion="108">
   <server artifactsdir="artifacts" agentAutoRegisterKey="c53fcbb4-0f35-49bc-8186-b3272d15d6ff" webhookSecret="f18a575c-1a45-4004-8c17-8baf03142cec" commandRepositoryLocation="default" serverId="8aca620d-7e8e-4acf-9e9f-f81a1780f880" tokenGenerationKey="b792ec27-487b-4047-a0b4-bbd8c65959db">
     <security>
       <authConfigs>
@@ -50,8 +50,7 @@
           </property>
           <property>
             <key>AllowedDomains</key>
-            <value>gmail.com
-dailybrain.fr</value>
+            <value>gmail.com</value>
           </property>
         </authConfig>
       </authConfigs>
@@ -251,7 +250,7 @@ dailybrain.fr</value>
               <resource>npm</resource>
             </resources>
             <artifacts>
-              <artifact src="dist.*.zip" dest="dist" />
+              <artifact type="build" src="dist.*.zip" dest="dist" />
             </artifacts>
           </job>
         </jobs>
@@ -260,7 +259,7 @@ dailybrain.fr</value>
         <jobs>
           <job name="npm-lint">
             <tasks>
-              <fetchartifact srcdir="dist" pipeline="Build" stage="setup" job="npm-install">
+              <fetchartifact origin="gocd" srcdir="dist" pipeline="Build" stage="setup" job="npm-install">
                 <runif status="passed" />
               </fetchartifact>
               <exec command="unzip" workingdir="dist">
@@ -284,7 +283,7 @@ dailybrain.fr</value>
         <jobs>
           <job name="npm-test">
             <tasks>
-              <fetchartifact srcdir="dist" pipeline="Build" stage="setup" job="npm-install">
+              <fetchartifact origin="gocd" srcdir="dist" pipeline="Build" stage="setup" job="npm-install">
                 <runif status="passed" />
               </fetchartifact>
               <exec command="unzip" workingdir="dist">
@@ -308,7 +307,7 @@ dailybrain.fr</value>
         <jobs>
           <job name="npm-build">
             <tasks>
-              <fetchartifact srcdir="dist" pipeline="Build" stage="setup" job="npm-install">
+              <fetchartifact origin="gocd" srcdir="dist" pipeline="Build" stage="setup" job="npm-install">
                 <runif status="passed" />
               </fetchartifact>
               <exec command="unzip" workingdir="dist">
@@ -330,7 +329,7 @@ dailybrain.fr</value>
               <resource>npm</resource>
             </resources>
             <artifacts>
-              <artifact src="dist/build/build.*.zip" dest="build" />
+              <artifact type="build" src="dist/build/build.*.zip" dest="build" />
             </artifacts>
           </job>
         </jobs>
@@ -381,7 +380,7 @@ dailybrain.fr</value>
         <jobs>
           <job name="npm-coverage">
             <tasks>
-              <fetchartifact srcdir="dist" pipeline="Build/DeployToDemo" stage="setup" job="npm-install">
+              <fetchartifact origin="gocd" srcdir="dist" pipeline="Build/DeployToDemo" stage="setup" job="npm-install">
                 <runif status="passed" />
               </fetchartifact>
               <exec command="unzip" workingdir="dist">
@@ -402,12 +401,12 @@ dailybrain.fr</value>
               <resource>npm</resource>
             </resources>
             <artifacts>
-              <test src="dist/coverage/*" dest="coverage" />
+              <artifact type="test" src="dist/coverage/*" dest="coverage" />
             </artifacts>
           </job>
         </jobs>
       </stage>
-    </pipeline>    
+    </pipeline>
     <pipeline name="DeployToProd" labeltemplate="${react-boilerplate-sample[:7]}" template="DeployTemplate">
       <params>
         <param name="pipelineName">Build/DeployToDemo/ReviewDemo</param>
@@ -429,7 +428,7 @@ dailybrain.fr</value>
         <jobs>
           <job name="deploy">
             <tasks>
-              <fetchartifact srcdir="build" pipeline="#{pipelineName}" stage="build" job="npm-build">
+              <fetchartifact origin="gocd" srcdir="build" pipeline="#{pipelineName}" stage="build" job="npm-build">
                 <runif status="passed" />
               </fetchartifact>
               <exec command="find">
@@ -476,6 +475,13 @@ dailybrain.fr</value>
   </templates>
   <environments>
     <environment name="Build">
+      <agents>
+        <physical uuid="f2916d64-7652-49ea-bebb-73e01abdbac0" />
+        <physical uuid="75f58fa6-171d-4f9f-9df5-5eee95233eeb" />
+        <physical uuid="59568c1b-a483-4c12-a4b0-6f53f4e45d02" />
+        <physical uuid="745a031f-215a-476d-be59-1d29d91296ee" />
+        <physical uuid="5759d9f7-edb1-4103-81f1-ab4bc6506646" />
+      </agents>
       <pipelines>
         <pipeline name="Build" />
         <pipeline name="Check_Platform" />
@@ -496,6 +502,13 @@ dailybrain.fr</value>
           <value>webserver-demo</value>
         </variable>
       </environmentvariables>
+      <agents>
+        <physical uuid="f2916d64-7652-49ea-bebb-73e01abdbac0" />
+        <physical uuid="75f58fa6-171d-4f9f-9df5-5eee95233eeb" />
+        <physical uuid="59568c1b-a483-4c12-a4b0-6f53f4e45d02" />
+        <physical uuid="745a031f-215a-476d-be59-1d29d91296ee" />
+        <physical uuid="5759d9f7-edb1-4103-81f1-ab4bc6506646" />
+      </agents>
       <pipelines>
         <pipeline name="Analysis" />
         <pipeline name="DeployToDemo" />
@@ -514,9 +527,51 @@ dailybrain.fr</value>
           <value>webserver-prod</value>
         </variable>
       </environmentvariables>
+      <agents>
+        <physical uuid="59568c1b-a483-4c12-a4b0-6f53f4e45d02" />
+      </agents>
       <pipelines>
         <pipeline name="DeployToProd" />
       </pipelines>
     </environment>
   </environments>
+  <agents>
+    <agent hostname="Ubuntu Golang Agent" ipaddress="172.18.0.5" uuid="f2916d64-7652-49ea-bebb-73e01abdbac0">
+      <resources>
+        <resource>linux</resource>
+        <resource>golang</resource>
+        <resource>go</resource>
+      </resources>
+    </agent>
+    <agent hostname="Ubuntu NodeJS Agent" ipaddress="172.18.0.6" uuid="75f58fa6-171d-4f9f-9df5-5eee95233eeb">
+      <resources>
+        <resource>linux</resource>
+        <resource>node</resource>
+        <resource>npm</resource>
+        <resource>nvm</resource>
+      </resources>
+    </agent>
+    <agent hostname="Ubuntu Agent" ipaddress="172.18.0.9" uuid="59568c1b-a483-4c12-a4b0-6f53f4e45d02">
+      <resources>
+        <resource>linux</resource>
+        <resource>deploy</resource>
+      </resources>
+    </agent>
+    <agent hostname="Ubuntu NodeJS Agent" ipaddress="172.18.0.7" uuid="745a031f-215a-476d-be59-1d29d91296ee">
+      <resources>
+        <resource>linux</resource>
+        <resource>node</resource>
+        <resource>npm</resource>
+        <resource>nvm</resource>
+      </resources>
+    </agent>
+    <agent hostname="CentOS JDK Agent" ipaddress="172.18.0.8" uuid="5759d9f7-edb1-4103-81f1-ab4bc6506646">
+      <resources>
+        <resource>linux</resource>
+        <resource>java</resource>
+        <resource>jre</resource>
+        <resource>jdk</resource>
+      </resources>
+    </agent>
+  </agents>
 </cruise>
