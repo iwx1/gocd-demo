@@ -1,7 +1,7 @@
 version: '3'
 services:
   gocd-server:
-    image: gocd/gocd-server:v18.2.0
+    image: gocd/gocd-server:v18.6.0
     environment:
      - AGENT_AUTO_REGISTER_KEY=c53fcbb4-0f35-49bc-8186-b3272d15d6ff
     ports:
@@ -9,6 +9,19 @@ services:
      - 8154:8154
     volumes:
      - ./gocd-server-data:/godata
+  gocd-agent-centos:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent-centos
+    environment:
+     - GO_SERVER_URL=https://gocd-server:8154/go
+     - AGENT_AUTO_REGISTER_KEY=c53fcbb4-0f35-49bc-8186-b3272d15d6ff
+     - AGENT_AUTO_REGISTER_RESOURCES=linux,java,jre,jdk
+     - AGENT_AUTO_REGISTER_ENVIRONMENTS=Build,Demo
+     - AGENT_AUTO_REGISTER_HOSTNAME=CentOS JDK Agent
+    depends_on:
+      - gocd-server
+    restart: always
   gocd-agent-default:
     build:
       context: .
@@ -22,19 +35,19 @@ services:
     depends_on:
      - gocd-server
     restart: always
-  gocd-agent-jdk:
-    build:
-      context: .
-      dockerfile: Dockerfile.agent-jdk
-    environment:
-     - GO_SERVER_URL=https://gocd-server:8154/go
-     - AGENT_AUTO_REGISTER_KEY=c53fcbb4-0f35-49bc-8186-b3272d15d6ff
-     - AGENT_AUTO_REGISTER_RESOURCES=linux,java,jre,jdk
-     - AGENT_AUTO_REGISTER_ENVIRONMENTS=Build,Demo
-     - AGENT_AUTO_REGISTER_HOSTNAME=Ubuntu JDK Agent
-    depends_on:
-      - gocd-server
-    restart: always
+  # gocd-agent-jdk:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.agent-jdk
+  #   environment:
+  #    - GO_SERVER_URL=https://gocd-server:8154/go
+  #    - AGENT_AUTO_REGISTER_KEY=c53fcbb4-0f35-49bc-8186-b3272d15d6ff
+  #    - AGENT_AUTO_REGISTER_RESOURCES=linux,java,jre,jdk
+  #    - AGENT_AUTO_REGISTER_ENVIRONMENTS=Build,Demo
+  #    - AGENT_AUTO_REGISTER_HOSTNAME=Ubuntu JDK Agent
+  #   depends_on:
+  #     - gocd-server
+  #   restart: always
   gocd-agent-npm:
     build:
       context: .
