@@ -1,11 +1,10 @@
 
 FROM gocd/gocd-agent-centos-7:v18.6.0
 
-RUN yum upgrade -y
 RUN yum update -y
+RUN yum upgrade -y
 
 RUN yum -y install java-1.8.0-openjdk-devel.x86_64
-RUN update-alternatives --config javac
 RUN alternatives --set jar /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.171-8.b10.el7_5.x86_64/bin/jar
 RUN alternatives --set javac /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.171-8.b10.el7_5.x86_64/bin/javac
 
